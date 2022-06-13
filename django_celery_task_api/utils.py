@@ -1,9 +1,10 @@
 import importlib
 from django.conf import settings
+from django.http import JsonResponse
 
 
 __all__ = [
-    "get_celery_app",
+    "get_celery_app", "serialize_task",
 ]
 
 
@@ -15,3 +16,14 @@ def get_celery_app():
     celery_module = importlib.import_module(celery_module_name)
 
     return getattr(celery_module, celery_app_name)
+
+
+def serialize_task(task, as_response=False):
+    serialized = {
+        "task_id": task.id,
+    }
+
+    if as_response:
+        return JsonResponse(serialized)
+
+    return serialized
